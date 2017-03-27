@@ -13,7 +13,11 @@ def main():
         # monday is 0 index.
 
         day = dt.datetime.today().weekday()
-        writers = mlb[day+1]
+        writers_today = mlb[day]
+        if day + 1 <= 6:
+            writers_tomrr = mlb[day+1]
+        else:
+            writers_tomrr = mlb[0]
 
         name_list = []
         with open('mlb_names.txt', 'r') as names:
@@ -26,7 +30,7 @@ def main():
         name_ids = []
         curr_loc = len(text)
 
-        for each in writers:
+        for each in writers_today:
             # each is regular name
             # name is nickname in group
             for name in name_list:
