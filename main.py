@@ -1,60 +1,14 @@
 #!/usr/bin/python3
-import csv
-import datetime as dt
-import requests
+import Bot
 
-
-def main():
-    with open('MLB.csv', newline='') as mlb_csv:
-        mlb = csv.reader(mlb_csv, quotechar='|')
-        mlb = [row for row in mlb]
-
-        # for this to work all days of week must be defined in csv
-        # monday is 0 index.
-
-        day = dt.datetime.today().weekday()
-        writers_today = mlb[day]
-        if day + 1 <= 6:
-            writers_tomrr = mlb[day+1]
-        else:
-            writers_tomrr = mlb[0]
-
-        name_list = []
-        with open('mlb_names.txt', 'r') as names:
-            for line in names:
-                line = line.strip()
-                name_list += [line]
-
-        text = "Due Today: "
-        locs = []
-        name_ids = []
-        curr_loc = len(text)
-
-        for each in writers_today:
-            # each is regular name
-            # name is nickname in group
-            for name in name_list:
-                if name.startswith(each):
-                    tag, num = name.split(',')
-                    text += "@"+tag+"\n"
-                    name_ids += [num[1:]]
-                    locs += [[curr_loc, len(tag)+1]]
-                    curr_loc += len(tag) + 2
-                    break
-
-        message = {
-            "bot_id": "9fa3d39e97f404bb361d61782a",
-            "text": text,
-            "attachments": [
-                {
-                    "type": "mentions",
-                    "user_ids": name_ids,
-                    "loci": locs
-                }
-            ]
-        }
-        print(text)
-        r = requests.post('https://api.groupme.com/v3/bots/post', json=message)
-        print(r)
 if __name__ == '__main__':
-    main()
+
+    msg = "You have an article due by tonight. Also, daily reminder "\
+        "to everyone to 1) like social media posts 2) engage our "\
+        "articles on third party forums and 3) comment on our "\
+        "articles on the site. Thanks and FUCK A&M!"
+
+    Bot.run('Big12.csv', 'big12_names.txt', '0d8ac1c1ac45a12a3a290181a5', msg)
+
+    #msg = "ROLL MFN ARMCHAIR BOYS!!!"
+    #Bot.run('MLB.csv', 'mlb_names.txt', '9fa3d39e97f404bb361d61782a', msg)
